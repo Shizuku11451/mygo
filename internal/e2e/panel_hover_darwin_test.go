@@ -30,6 +30,11 @@ func TestPanelHoverWhileInactive(t *testing.T) {
 	if !deactivateApp() {
 		t.Skip("cannot activate another app")
 	}
+	// The tests after this one find the app active, as TestPanel needs.
+	t.Cleanup(func() {
+		activateApp()
+		eventually(t, "the app active again", func() bool { active, _ := appActive(); return active })
+	})
 	eventually(t, "the app deactivated", func() bool { active, _ := appActive(); return !active })
 	panel.ShowInactive()
 	eventually(t, "the first frame", drawn.Load)
